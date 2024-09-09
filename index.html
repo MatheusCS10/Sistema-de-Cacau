@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Produção de Café</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #3c6e71;
+            --secondary-color: #d9d9d9;
+            --text-color: #284b63;
+            --background-color: #f0f0f0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        .section {
+            background-color: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary-color);
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2c5255;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gestão de Produção de Café</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#irrigacao">Irrigação</a></li>
+            <li><a href="#producao">Produção</a></li>
+            <li><a href="#relatorios">Relatórios</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div id="irrigacao" class="section">
+            <h2>Registro de Irrigação</h2>
+            <form id="irrigacaoForm">
+                <input type="date" id="dataIrrigacao" required>
+                <input type="text" id="areaIrrigada" placeholder="Área Irrigada" required>
+                <input type="number" id="quantidadeAgua" placeholder="Quantidade de Água (litros)" required>
+                <button type="submit">Registrar Irrigação</button>
+            </form>
+        </div>
+
+        <div id="producao" class="section">
+            <h2>Registro de Produção</h2>
+            <form id="producaoForm">
+                <input type="date" id="dataColheita" required>
+                <input type="text" id="areaColhida" placeholder="Área Colhida" required>
+                <input type="number" id="quantidadeColhida" placeholder="Quantidade Colhida (kg)" required>
+                <select id="qualidadeCafe">
+                    <option value="alta">Alta Qualidade</option>
+                    <option value="media">Média Qualidade</option>
+                    <option value="baixa">Baixa Qualidade</option>
+                </select>
+                <button type="submit">Registrar Produção</button>
+            </form>
+        </div>
+
+        <div id="relatorios" class="section">
+            <h2>Relatórios</h2>
+            <button onclick="gerarRelatorioIrrigacao()">Relatório de Irrigação</button>
+            <button onclick="gerarRelatorioProducao()">Relatório de Produção</button>
+            <div id="relatorioContent"></div>
+            <div class="chart-container">
+                <canvas id="chartIrrigacao"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="chartProducao"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let registrosIrrigacao = JSON.parse(localStorage.getItem('registrosIrrigacao')) || [];
+        let registrosProducao = JSON.parse(localStorage.getItem('registrosProducao')) || [];
+
+        document.getElementById('irrigacaoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let registro = {
+                data: document.getElementById('dataIrrigacao').value,
+                area: document.getElementById('areaIrrigada').value,
+                quantidade: parseFloat(document.getElementById('quantidadeAgua').value)
+            };
+            registrosIrrigacao.push(registro);
+            localStorage.setItem('registrosIrrigacao', JSON.stringify(registrosIrrigacao));
+            alert('Irrigação registrada com sucesso!');
+            this.reset();
+        });
+
+        document.getElementById('producaoForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            let registro = {
+                data: document.getElementById('dataColheita').value,
+                area: document.getElementById('areaColhida').value,
+                quantidade: parseFloat(document.getElementById('quantidadeColhida').value),
+                qualidade: document.getElementById('qualidadeCafe').value
+            };
+            registrosProducao.push(registro);
+            localStorage.setItem('registrosProducao', JSON.stringify(registrosProducao));
+            alert('Produção registrada com sucesso!');
+            this.reset();
+        });
+
+        function gerarRelatorioIrrigacao() {
+            let totalAgua = registrosIrrigacao.reduce((total, registro) => total + registro.quantidade, 0);
+            let relatorioHTML = '<h3>Relatório de Irrigação</h3>';
+            relatorioHTML += '<table><tr><th>Data</th><th>Área</th><th>Quantidade (L)</th></tr>';
+            registrosIrrigacao.forEach(registro => {
+                relatorioHTML += `<tr><td>${registro.data}</td><td>${registro.area}</td><td>${registro.quantidade}</td></tr>`;
+            });
+            relatorioHTML += `</table><p><strong>Uso total de água: ${totalAgua} litros</strong></p>`;
+            document.getElementById('relatorioContent').innerHTML = relatorioHTML;
+
+            criarGraficoIrrigacao();
+        }
+
+        function gerarRelatorioProducao() {
+            let totalProducao = registrosProducao.reduce((total, registro) => total + registro.quantidade, 0);
+            let relatorioHTML = '<h3>Relatório de Produção</h3>';
+            relatorioHTML += '<table><tr><th>Data</th><th>Área</th><th>Quantidade (kg)</th><th>Qualidade</th></tr>';
+            registrosProducao.forEach(registro => {
+                relatorioHTML += `<tr><td>${registro.data}</td><td>${registro.area}</td><td>${registro.quantidade}</td><td>${registro.qualidade}</td></tr>`;
+            });
+            relatorioHTML += `</table><p><strong>Produção total: ${totalProducao} kg</strong></p>`;
+            document.getElementById('relatorioContent').innerHTML = relatorioHTML;
+
+            criarGraficoProducao();
+        }
+
+        function criarGraficoIrrigacao() {
+            const ctx = document.getElementById('chartIrrigacao').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: registrosIrrigacao.map(r => r.data),
+                    datasets: [{
+                        label: 'Quantidade de Água (L)',
+                        data: registrosIrrigacao.map(r => r.quantidade),
+                        backgroundColor: 'rgba(60, 110, 113, 0.6)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Irrigação ao Longo do Tempo'
+                        }
+                    }
+                }
+            });
+        }
+
+        function criarGraficoProducao() {
+            const ctx = document.getElementById('chartProducao').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: registrosProducao.map(r => r.data),
+                    datasets: [{
+                        label: 'Produção (kg)',
+                        data: registrosProducao.map(r => r.quantidade),
+                        borderColor: 'rgba(40, 75, 99, 0.8)',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Produção ao Longo do Tempo'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
