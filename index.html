@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Produção de Café</title>
+    <title>Gestão da Produção de Cacau</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
         :root {
-            --primary-color: #3c6e71;
-            --secondary-color: #d9d9d9;
-            --text-color: #284b63;
-            --background-color: #f0f0f0;
+            --primary-color: #654321;
+            --secondary-color: #d2b48c;
+            --text-color: #333;
+            --background-color: #f4e1d2;
         }
-
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
@@ -22,68 +20,55 @@
             background-color: var(--background-color);
             color: var(--text-color);
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
         header {
             background-color: var(--primary-color);
             color: white;
             text-align: center;
             padding: 1rem 0;
         }
-
         nav {
             background-color: var(--secondary-color);
             padding: 0.5rem;
         }
-
         nav ul {
             list-style-type: none;
             padding: 0;
             display: flex;
             justify-content: center;
         }
-
         nav ul li {
             margin: 0 10px;
         }
-
         nav ul li a {
             text-decoration: none;
             color: var(--text-color);
             font-weight: bold;
         }
-
         .section {
             background-color: white;
             margin: 20px 0;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-
         h2 {
             color: var(--primary-color);
         }
-
         form {
             display: grid;
             gap: 10px;
         }
-
-        input,
-        select,
-        button {
+        input, select, button {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
         button {
             background-color: var(--primary-color);
             color: white;
@@ -91,28 +76,22 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
         button:hover {
-            background-color: #2c5255;
+            background-color: #4a3219;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
-        th,
-        td {
+        th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: var(--secondary-color);
         }
-
         .chart-container {
             width: 100%;
             max-width: 600px;
@@ -120,26 +99,26 @@
         }
     </style>
 </head>
-
 <body>
     <header>
-        <h1>Gestão de Produção de Café</h1>
+        <h1>Gestão da Produção de Cacau</h1>
     </header>
     <nav>
         <ul>
-            <li><a href="#irrigacao">Irrigação</a></li>
+            <li><a href="#fermentacao">Fermentação</a></li>
             <li><a href="#producao">Produção</a></li>
+            <li><a href="#doencas">Doenças</a></li>
             <li><a href="#relatorios">Relatórios</a></li>
         </ul>
     </nav>
     <div class="container">
-        <div id="irrigacao" class="section">
-            <h2>Registro de Irrigação</h2>
-            <form id="irrigacaoForm">
-                <input type="date" id="dataIrrigacao" required>
-                <input type="text" id="areaIrrigada" placeholder="Área Irrigada" required>
-                <input type="number" id="quantidadeAgua" placeholder="Quantidade de Água (litros)" required>
-                <button type="submit">Registrar Irrigação</button>
+        <div id="fermentacao" class="section">
+            <h2>Registro de Fermentação</h2>
+            <form id="fermentacaoForm">
+                <input type="date" id="dataInicio" required>
+                <input type="number" id="quantidadeCacau" placeholder="Quantidade de Cacau (kg)" required>
+                <input type="number" id="temperaturaInicial" placeholder="Temperatura Inicial (°C)" required>
+                <button type="submit">Iniciar Fermentação</button>
             </form>
         </div>
 
@@ -149,7 +128,7 @@
                 <input type="date" id="dataColheita" required>
                 <input type="text" id="areaColhida" placeholder="Área Colhida" required>
                 <input type="number" id="quantidadeColhida" placeholder="Quantidade Colhida (kg)" required>
-                <select id="qualidadeCafe">
+                <select id="qualidadeCacau">
                     <option value="alta">Alta Qualidade</option>
                     <option value="media">Média Qualidade</option>
                     <option value="baixa">Baixa Qualidade</option>
@@ -158,14 +137,26 @@
             </form>
         </div>
 
+        <div id="doencas" class="section">
+            <h2>Registro de Doenças</h2>
+            <form id="doencasForm">
+                <input type="date" id="dataDeteccao" required>
+                <select id="tipoDoenca">
+                    <option value="vassoura-de-bruxa">Vassoura-de-bruxa</option>
+                    <option value="podridao-parda">Podridão Parda</option>
+                    <option value="moniliase">Monilíase</option>
+                </select>
+                <input type="text" id="areaAfetada" placeholder="Área Afetada" required>
+                <button type="submit">Registrar Ocorrência</button>
+            </form>
+        </div>
+
         <div id="relatorios" class="section">
             <h2>Relatórios</h2>
-            <button onclick="gerarRelatorioIrrigacao()">Relatório de Irrigação</button>
+            <button onclick="gerarRelatorioFermentacao()">Relatório de Fermentação</button>
             <button onclick="gerarRelatorioProducao()">Relatório de Produção</button>
+            <button onclick="gerarRelatorioDoenças()">Relatório de Doenças</button>
             <div id="relatorioContent"></div>
-            <div class="chart-container">
-                <canvas id="chartIrrigacao"></canvas>
-            </div>
             <div class="chart-container">
                 <canvas id="chartProducao"></canvas>
             </div>
@@ -173,29 +164,30 @@
     </div>
 
     <script>
-        let registrosIrrigacao = JSON.parse(localStorage.getItem('registrosIrrigacao')) || [];
+        let registrosFermentacao = JSON.parse(localStorage.getItem('registrosFermentacao')) || [];
         let registrosProducao = JSON.parse(localStorage.getItem('registrosProducao')) || [];
+        let registrosDoencas = JSON.parse(localStorage.getItem('registrosDoencas')) || [];
 
-        document.getElementById('irrigacaoForm').addEventListener('submit', function (e) {
+        document.getElementById('fermentacaoForm').addEventListener('submit', function(e) {
             e.preventDefault();
             let registro = {
-                data: document.getElementById('dataIrrigacao').value,
-                area: document.getElementById('areaIrrigada').value,
-                quantidade: parseFloat(document.getElementById('quantidadeAgua').value)
+                dataInicio: document.getElementById('dataInicio').value,
+                quantidade: parseFloat(document.getElementById('quantidadeCacau').value),
+                temperaturaInicial: parseFloat(document.getElementById('temperaturaInicial').value)
             };
-            registrosIrrigacao.push(registro);
-            localStorage.setItem('registrosIrrigacao', JSON.stringify(registrosIrrigacao));
-            alert('Irrigação registrada com sucesso!');
+            registrosFermentacao.push(registro);
+            localStorage.setItem('registrosFermentacao', JSON.stringify(registrosFermentacao));
+            alert('Fermentação iniciada com sucesso!');
             this.reset();
         });
 
-        document.getElementById('producaoForm').addEventListener('submit', function (e) {
+        document.getElementById('producaoForm').addEventListener('submit', function(e) {
             e.preventDefault();
             let registro = {
                 data: document.getElementById('dataColheita').value,
                 area: document.getElementById('areaColhida').value,
                 quantidade: parseFloat(document.getElementById('quantidadeColhida').value),
-                qualidade: document.getElementById('qualidadeCafe').value
+                qualidade: document.getElementById('qualidadeCacau').value
             };
             registrosProducao.push(registro);
             localStorage.setItem('registrosProducao', JSON.stringify(registrosProducao));
@@ -203,17 +195,27 @@
             this.reset();
         });
 
-        function gerarRelatorioIrrigacao() {
-            let totalAgua = registrosIrrigacao.reduce((total, registro) => total + registro.quantidade, 0);
-            let relatorioHTML = '<h3>Relatório de Irrigação</h3>';
-            relatorioHTML += '<table><tr><th>Data</th><th>Área</th><th>Quantidade (L)</th></tr>';
-            registrosIrrigacao.forEach(registro => {
-                relatorioHTML += `<tr><td>${registro.data}</td><td>${registro.area}</td><td>${registro.quantidade}</td></tr>`;
-            });
-            relatorioHTML += `</table><p><strong>Uso total de água: ${totalAgua} litros</strong></p>`;
-            document.getElementById('relatorioContent').innerHTML = relatorioHTML;
+        document.getElementById('doencasForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let registro = {
+                data: document.getElementById('dataDeteccao').value,
+                tipo: document.getElementById('tipoDoenca').value,
+                area: document.getElementById('areaAfetada').value
+            };
+            registrosDoencas.push(registro);
+            localStorage.setItem('registrosDoencas', JSON.stringify(registrosDoencas));
+            alert('Ocorrência de doença registrada com sucesso!');
+            this.reset();
+        });
 
-            criarGraficoIrrigacao();
+        function gerarRelatorioFermentacao() {
+            let relatorioHTML = '<h3>Relatório de Fermentação</h3>';
+            relatorioHTML += '<table><tr><th>Data de Início</th><th>Quantidade (kg)</th><th>Temperatura Inicial (°C)</th></tr>';
+            registrosFermentacao.forEach(registro => {
+                relatorioHTML += `<tr><td>${registro.dataInicio}</td><td>${registro.quantidade}</td><td>${registro.temperaturaInicial}</td></tr>`;
+            });
+            relatorioHTML += '</table>';
+            document.getElementById('relatorioContent').innerHTML = relatorioHTML;
         }
 
         function gerarRelatorioProducao() {
@@ -225,32 +227,18 @@
             });
             relatorioHTML += `</table><p><strong>Produção total: ${totalProducao} kg</strong></p>`;
             document.getElementById('relatorioContent').innerHTML = relatorioHTML;
-
+            
             criarGraficoProducao();
         }
 
-        function criarGraficoIrrigacao() {
-            const ctx = document.getElementById('chartIrrigacao').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: registrosIrrigacao.map(r => r.data),
-                    datasets: [{
-                        label: 'Quantidade de Água (L)',
-                        data: registrosIrrigacao.map(r => r.quantidade),
-                        backgroundColor: 'rgba(60, 110, 113, 0.6)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Irrigação ao Longo do Tempo'
-                        }
-                    }
-                }
+        function gerarRelatorioDoenças() {
+            let relatorioHTML = '<h3>Relatório de Doenças</h3>';
+            relatorioHTML += '<table><tr><th>Data</th><th>Tipo de Doença</th><th>Área Afetada</th></tr>';
+            registrosDoencas.forEach(registro => {
+                relatorioHTML += `<tr><td>${registro.data}</td><td>${registro.tipo}</td><td>${registro.area}</td></tr>`;
             });
+            relatorioHTML += '</table>';
+            document.getElementById('relatorioContent').innerHTML = relatorioHTML;
         }
 
         function criarGraficoProducao() {
@@ -260,9 +248,9 @@
                 data: {
                     labels: registrosProducao.map(r => r.data),
                     datasets: [{
-                        label: 'Produção (kg)',
+                        label: 'Produção de Cacau (kg)',
                         data: registrosProducao.map(r => r.quantidade),
-                        borderColor: 'rgba(40, 75, 99, 0.8)',
+                        borderColor: 'rgba(101, 67, 33, 0.8)',
                         fill: false
                     }]
                 },
@@ -271,7 +259,7 @@
                     plugins: {
                         title: {
                             display: true,
-                            text: 'Produção ao Longo do Tempo'
+                            text: 'Produção de Cacau ao Longo do Tempo'
                         }
                     }
                 }
@@ -279,5 +267,4 @@
         }
     </script>
 </body>
-
 </html>
